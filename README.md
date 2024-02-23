@@ -1,31 +1,20 @@
-cd ~
-git clone https://github.com/opencv/opencv.git
+import picamera
 
+# Initialize the camera
+camera = picamera.PiCamera()
 
-cd ~
-git clone https://github.com/opencv/opencv_contrib.git
+# Set the resolution of the stream
+camera.resolution = (640, 480)
 
+# Start the stream
+camera.start_stream()
 
+# Get the RTSP URL
+rtsp_url = "rtsp://" + camera.host + ":" + str(camera.stream_port) + "/"
 
-cd ~/opencv
-mkdir build
-cd build
-cmake -D CMAKE_BUILD_TYPE=RELEASE \
-      -D CMAKE_INSTALL_PREFIX=/usr/local \
-      -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules \
-      -D ENABLE_NEON=ON \
-      -D ENABLE_VFPV3=ON \
-      -D BUILD_TESTS=OFF \
-      -D INSTALL_PYTHON_EXAMPLES=OFF \
-      -D OPENCV_ENABLE_NONFREE=ON \
-      -D CMAKE_SHARED_LINKER_FLAGS='-latomic' \
-      -D BUILD_EXAMPLES=OFF ..
-make -j$(nproc)
+# Stop the stream and release the camera resources
+camera.stop_stream()
+camera.close()
 
-
-sudo make install
-sudo ldconfig
-
-
-import cv2
-print(cv2.__version__)
+# Print the RTSP URL
+print(rtsp_url)
